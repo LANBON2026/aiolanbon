@@ -1,0 +1,34 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "aiolanbon"
+version = "0.1.0"
+description = "Async Python client for LANBON Mesh root local HTTP/WebSocket API"
+readme = "README.md"
+requires-python = ">=3.11"
+license = { text = "MIT" }
+authors = [{ name = "LANBON", email = "lanbon@lanbon.cn" }]
+keywords = ["lanbon", "homeassistant", "aiohttp"]
+classifiers = [
+  "Development Status :: 4 - Beta",
+  "Framework :: AsyncIO",
+  "Intended Audience :: Developers",
+  "License :: OSI Approved :: MIT License",
+  "Programming Language :: Python :: 3",
+  "Programming Language :: Python :: 3.11",
+  "Programming Language :: Python :: 3.12",
+  "Programming Language :: Python :: 3.13",
+  "Topic :: Home Automation",
+]
+dependencies = [
+  "aiohttp>=3.9.0",
+]
+
+[project.urls]
+Homepage = "https://github.com/LANBON2026/aiolanbon"
+Repository = "https://github.com/LANBON2026/aiolanbon"
+
+[tool.setuptools.packages.find]
+where = ["src"]
