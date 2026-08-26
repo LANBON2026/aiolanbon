@@ -1,0 +1,4 @@
+# Runtime lock for aiolanbon 0.2.0 (Python 3.13 / Windows).
+# Install: pip install -r requirements.lock.txt
+aiohttp==3.14.3
+# Build (see constraints-build.txt): build==1.5.0 setuptools==84.0.0 wheel==0.48.0 SOURCE_DATE_EPOCH=1700000000

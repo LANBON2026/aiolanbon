@@ -1,16 +1,17 @@
 [build-system]
-requires = ["setuptools>=68", "wheel"]
-build-backend = "setuptools.build_meta"
+requires = ["setuptools==84.0.0", "wheel==0.48.0"]
+build-backend = "loip_build"
+backend-path = ["packaging"]
 
 [project]
 name = "aiolanbon"
-version = "0.1.0"
-description = "Async Python client for LANBON Mesh root local HTTP/WebSocket API"
+version = "0.2.0"
+description = "Async Python client for the frozen LOIP 1.0.0 local HTTP/WebSocket API"
 readme = "README.md"
 requires-python = ">=3.11"
 license = { text = "MIT" }
 authors = [{ name = "LANBON", email = "lanbon@lanbon.cn" }]
-keywords = ["lanbon", "homeassistant", "aiohttp"]
+keywords = ["lanbon", "loip", "aiohttp"]
 classifiers = [
   "Development Status :: 4 - Beta",
   "Framework :: AsyncIO",
@@ -20,15 +21,29 @@ classifiers = [
   "Programming Language :: Python :: 3.11",
   "Programming Language :: Python :: 3.12",
   "Programming Language :: Python :: 3.13",
-  "Topic :: Home Automation",
 ]
 dependencies = [
-  "aiohttp>=3.9.0",
+  "aiohttp>=3.9.0,<4",
+]
+
+[project.optional-dependencies]
+dev = [
+  "pytest>=8.0",
+  "pytest-asyncio>=0.24",
+  "build==1.5.0",
+]
+discovery = [
+  "zeroconf>=0.132",
 ]
 
 [project.urls]
-Homepage = "https://github.com/LANBON2026/aiolanbon"
-Repository = "https://github.com/LANBON2026/aiolanbon"
+Homepage = "https://192.168.0.188:3000/lanbon/aiolanbon"
+Repository = "https://192.168.0.188:3000/lanbon/aiolanbon"
 
 [tool.setuptools.packages.find]
 where = ["src"]
+
+[tool.pytest.ini_options]
+asyncio_mode = "auto"
+asyncio_default_fixture_loop_scope = "function"
+testpaths = ["tests"]

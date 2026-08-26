@@ -4,3 +4,8 @@ build/
 __pycache__/
 .pytest_cache/
 .venv/
+.loip_token
+*.whl
+coverage.xml
+.coverage
+htmlcov/

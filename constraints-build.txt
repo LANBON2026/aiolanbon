@@ -1,0 +1,8 @@
+# Locked front-end + backend for bit-identical sdist/wheel.
+# Command (PowerShell):
+#   $env:SOURCE_DATE_EPOCH="1700000000"
+#   python -m pip install -c constraints-build.txt build
+#   python -m build
+build==1.5.0
+setuptools==84.0.0
+wheel==0.48.0
