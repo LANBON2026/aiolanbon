@@ -23,3 +23,13 @@ async with aiohttp.ClientSession() as session:
 - mDNS: `_lanbon._tcp`, allowed TXT only (`id`, `api`, `path`, `series`, `model`, `auth`, `scheme`). Token is not read from TXT.
 
 See `docs/MIGRATION.md` and `docs/LOIP_COVERAGE.md`.
+
+Reproducible artifacts (do not publish without authorization):
+
+```text
+set SOURCE_DATE_EPOCH=1700000000
+python -m pip install -c constraints-build.txt build
+python -m build
+```
+
+`constraints-build.txt` pins `build==1.5.0`, `setuptools==84.0.0`, `wheel==0.48.0`. The in-tree backend clamps tar/gzip timestamps so two clean checkouts hash equal.
