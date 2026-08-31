@@ -24,7 +24,7 @@ from .exceptions import (
     LanbonRateLimitError,
     LanbonTimeoutError,
 )
-from .models import CommandResponse, DeviceSnapshot, Event, GatewayInfo
+from .models import CommandResponse, DeviceSnapshot, Event, GatewayInfo, SnapshotRefresh
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -118,13 +118,19 @@ class LanbonClient:
             }
         )
 
-    async def listen_events(self) -> AsyncIterator[Event]:
-        """Yield LOIP events from `/api/v1/events`. Reconnects with bounded backoff.
+    async def listen(self) -> AsyncIterator[Event | SnapshotRefresh]:
+        """Yield snapshot-refresh signals and LOIP events from `/api/v1/events`.
+
+        After each successful WebSocket handshake yields `SnapshotRefresh`
+        (`connected` once, `reconnected` after a drop). Malformed JSON yields
+        `parse_error` and the socket stays open. Reconnects with bounded backoff.
 
         Does not put the token in the URL. 401 is not retried. 404/501 raises
         LanbonEventsUnsupportedError so the caller can poll `/devices`.
+        CancelledError and generator close (aclose/break) are not retried.
         """
         delay = 1.0
+        ever_connected = False
         while True:
             try:
                 ws_kwargs: dict[str, Any] = {
@@ -139,14 +145,21 @@ class LanbonClient:
                     pass
                 async with self._session.ws_connect(self.events_url, **ws_kwargs) as ws:
                     delay = 1.0
-                    _LOGGER.debug("LOIP WS connected %s:%s", self.host, self.port)
+                    reason: str = (
+                        SnapshotRefresh.RECONNECTED if ever_connected else SnapshotRefresh.CONNECTED
+                    )
+                    ever_connected = True
+                    _LOGGER.debug("LOIP WS connected %s:%s reason=%s", self.host, self.port, reason)
+                    yield SnapshotRefresh(reason=reason)
                     async for msg in ws:
                         if msg.type == aiohttp.WSMsgType.TEXT:
                             try:
                                 data = json.loads(msg.data)
                             except json.JSONDecodeError:
+                                yield SnapshotRefresh(reason=SnapshotRefresh.PARSE_ERROR)
                                 continue
                             if not isinstance(data, dict):
+                                yield SnapshotRefresh(reason=SnapshotRefresh.PARSE_ERROR)
                                 continue
                             yield Event.from_dict(data)
                         elif msg.type in (aiohttp.WSMsgType.CLOSED, aiohttp.WSMsgType.ERROR):
@@ -167,6 +180,17 @@ class LanbonClient:
             jitter = random.uniform(0, min(0.5, delay * 0.1))
             await asyncio.sleep(delay + jitter)
             delay = min(60.0, delay * 2)
+
+    async def listen_events(self) -> AsyncIterator[Event]:
+        """Yield only `Event` objects. SnapshotRefresh signals are skipped.
+
+        Kept for existing `async for Event` consumers. Home Assistant must use
+        `listen()` so first connect, reconnect, and parse failures trigger
+        GET /devices immediately instead of waiting for the 15s poll.
+        """
+        async for item in self.listen():
+            if isinstance(item, Event):
+                yield item
 
     async def ws_listen(self, on_message: Callable[[dict[str, Any]], None]) -> None:
         """Compatibility wrapper: dict callback instead of Event objects."""

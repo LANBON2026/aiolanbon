@@ -171,7 +171,10 @@ def make_app(state: dict[str, Any] | None = None) -> web.Application:
             await ws.close()
             return ws
         for ev in app["st"]["events"]:
-            await ws.send_json(ev)
+            if isinstance(ev, str):
+                await ws.send_str(ev)
+            else:
+                await ws.send_json(ev)
         async for msg in ws:
             if msg.type in {WSMsgType.CLOSE, WSMsgType.ERROR}:
                 break

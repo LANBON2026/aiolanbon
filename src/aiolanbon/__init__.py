@@ -25,6 +25,7 @@ from .models import (
     DiscoveredGateway,
     Event,
     GatewayInfo,
+    SnapshotRefresh,
 )
 
 __all__ = [
@@ -35,6 +36,7 @@ __all__ = [
     "DiscoveredGateway",
     "Event",
     "GatewayInfo",
+    "SnapshotRefresh",
     "LanbonApiError",
     "LanbonAuthError",
     "LanbonClient",

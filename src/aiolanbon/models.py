@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 from dataclasses import dataclass, field
-from typing import Any
+from typing import Any, ClassVar, Literal
 
 
 def _extra(data: dict[str, Any], known: set[str]) -> dict[str, Any]:
@@ -288,6 +288,28 @@ EVENT_TYPES = frozenset(
         "server_restarting",
     }
 )
+
+
+RefreshReason = Literal["connected", "reconnected", "parse_error"]
+
+
+@dataclass(frozen=True)
+class SnapshotRefresh:
+    """Public signal: caller must GET /api/v1/devices (clear ETag first).
+
+    Yielded by `LanbonClient.listen()`. `listen_events()` skips these so old
+    `async for Event` consumers keep working.
+    """
+
+    CONNECTED: ClassVar[str] = "connected"
+    RECONNECTED: ClassVar[str] = "reconnected"
+    PARSE_ERROR: ClassVar[str] = "parse_error"
+
+    reason: RefreshReason
+
+    @property
+    def needs_snapshot(self) -> bool:
+        return True
 
 
 @dataclass(frozen=True)

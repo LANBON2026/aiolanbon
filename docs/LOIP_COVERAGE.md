@@ -10,7 +10,7 @@ Library maps JSON; it does not invent fields.
 | components | `devices[].components[]` | `Device.components` / `Device.component()` |
 | capabilities | `features`, `commands`, `constraints`, `type`, `enabled` | `Component.capabilities` / `DeviceSnapshot.capabilities()` |
 | command | POST `/api/v1/command` | `command()` / `send_command()` |
-| events | GET `/api/v1/events` WS, Bearer header | `listen_events()` / `ws_listen()` |
+| events | GET `/api/v1/events` WS, Bearer header | `listen()` (`SnapshotRefresh` + `Event`); `listen_events()` / `ws_listen()` stay Event-only |
 | revision | opaque string; resync via `/devices` | compared for equality only; `Event.needs_snapshot` |
 | error | `ok` + `error.code` + HTTP 401/429/4xx/5xx | `LanbonAuthError`, `LanbonRateLimitError`, `LanbonTimeoutError`, `LanbonApiError.code` |
 | mDNS | `_lanbon._tcp`, no token in TXT | `parse_mdns_txt` / `discovered_from_mdns` |

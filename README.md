@@ -18,7 +18,7 @@ async with aiohttp.ClientSession() as session:
 ```
 
 - Auth: `Authorization: Bearer <token>` only.
-- Events: `ws://host:port/api/v1/events` (no token in the URL). If `/info` says `polling`, use `get_devices` + revision instead.
+- Events: `ws://host:port/api/v1/events` (no token in the URL). `listen()` yields `SnapshotRefresh` then `Event`; see `docs/RECOVERY_SIGNALS.md`. If `/info` says `polling`, use `get_devices` + revision instead.
 - Capabilities: `snapshot.capabilities()` from each component's `features` / `commands` / `constraints`.
 - mDNS: `_lanbon._tcp`, allowed TXT only (`id`, `api`, `path`, `series`, `model`, `auth`, `scheme`). Token is not read from TXT.
 
