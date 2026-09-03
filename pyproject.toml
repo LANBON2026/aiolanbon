@@ -37,8 +37,8 @@ discovery = [
 ]
 
 [project.urls]
-Homepage = "https://192.168.0.188:3000/lanbon/aiolanbon"
-Repository = "https://192.168.0.188:3000/lanbon/aiolanbon"
+Homepage = "https://github.com/LANBON2026/aiolanbon"
+Repository = "https://github.com/LANBON2026/aiolanbon"
 
 [tool.setuptools.packages.find]
 where = ["src"]
