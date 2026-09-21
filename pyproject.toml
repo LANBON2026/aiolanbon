@@ -5,7 +5,7 @@ backend-path = ["packaging"]
 
 [project]
 name = "aiolanbon"
-version = "0.2.0"
+version = "0.2.1"
 description = "Async Python client for the frozen LOIP 1.0.0 local HTTP/WebSocket API"
 readme = "README.md"
 requires-python = ">=3.11"
@@ -24,6 +24,7 @@ classifiers = [
 ]
 dependencies = [
   "aiohttp>=3.9.0,<4",
+  "yarl>=1.9.0,<2",
 ]
 
 [project.optional-dependencies]
