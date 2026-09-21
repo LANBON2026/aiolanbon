@@ -20,3 +20,6 @@ async with aiohttp.ClientSession() as session:
 - mDNS: `_lanbon._tcp`. Token is not read from TXT.
 
 PyPI: `aiolanbon==0.2.0` (LOIP). `0.1.0` was the Mesh client.
+
+
+Version 0.2.1 adds IPv6-safe HTTP and WebSocket URL construction. Release candidates must pass the Linux test matrix before publication.
