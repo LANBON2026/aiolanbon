@@ -14,6 +14,7 @@ from collections.abc import AsyncIterator, Callable
 from typing import Any
 
 import aiohttp
+from yarl import URL
 
 from ._redact import auth_headers
 from .exceptions import (
@@ -59,14 +60,21 @@ class LanbonClient:
     def __repr__(self) -> str:
         return f"LanbonClient(host={self.host!r}, port={self.port}, scheme={self.scheme!r})"
 
+    def _origin(self) -> URL:
+        """HTTP origin. IPv6 literals are bracketed once; token is never in the URL."""
+        host = self.host.strip()
+        if host.startswith("[") and "]" in host:
+            host = host[1 : host.index("]")]
+        return URL.build(scheme=self.scheme, host=host, port=self.port)
+
     @property
     def base(self) -> str:
-        return f"{self.scheme}://{self.host}:{self.port}"
+        return str(self._origin())
 
     @property
     def events_url(self) -> str:
         ws_scheme = "wss" if self.scheme == "https" else "ws"
-        return f"{ws_scheme}://{self.host}:{self.port}{EVENTS_PATH}"
+        return str(self._origin().with_scheme(ws_scheme).with_path(EVENTS_PATH))
 
     def _headers(self) -> dict[str, str]:
         return auth_headers(self._token)
